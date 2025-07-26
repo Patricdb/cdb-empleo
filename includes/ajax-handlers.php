@@ -11,9 +11,9 @@ function cdb_guardar_oferta_callback() {
     // Verificar el nonce de seguridad.
     check_ajax_referer( 'cdb_form_nonce', 'security' );
 
-   // Verificar que el usuario esté conectado y tenga el rol "Empleador" o "administrator"
+   // Verificar que el usuario esté conectado y tenga permisos para crear ofertas
     $current_user = wp_get_current_user();
-    if ( ! $current_user->exists() || ( ! in_array( 'empleador', (array) $current_user->roles ) && ! in_array( 'administrator', (array) $current_user->roles ) ) ) {
+    if ( ! $current_user->exists() || ! current_user_can( 'create_oferta_empleo' ) ) {
         wp_send_json_error( array( 'message' => 'No tienes permisos para realizar esta acción.' ) );
     }
 
@@ -30,6 +30,13 @@ function cdb_guardar_oferta_callback() {
     // Validar que se hayan completado todos los campos requeridos.
     if ( empty( $bar_id ) || empty( $posicion_id ) || empty( $tipo_oferta ) || empty( $fecha_incorporacion ) || empty( $fecha_fin ) || $nivel_salarial === '' || empty( $funciones ) ) {
         wp_send_json_error( array( 'message' => 'Por favor, completa todos los campos requeridos.' ) );
+    }
+
+    // Verificar coherencia de las fechas
+    $inicio_ts = strtotime( $fecha_incorporacion );
+    $fin_ts    = strtotime( $fecha_fin );
+    if ( false !== $inicio_ts && false !== $fin_ts && $inicio_ts >= $fin_ts ) {
+        wp_send_json_error( array( 'message' => 'La fecha de incorporación debe ser anterior a la fecha de fin.' ) );
     }
 
     // Crear un título para la oferta (por ejemplo, combinando el nombre del bar y el tipo de oferta).

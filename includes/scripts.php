@@ -15,20 +15,25 @@ function cdb_empleo_enqueue_scripts() {
         '1.0.0'
     );
 
-    // Encolar el script para funcionalidades personalizadas, como el autocomplete.
-    wp_enqueue_script(
-        'cdb-empleo-script',
-        CDB_EMPLEO_URL . 'assets/js/script-ofertas.js',
-        array( 'jquery', 'jquery-ui-autocomplete' ),
-        '1.0.0',
-        true
-    );
+    // Cargar los scripts solo en páginas que utilicen el formulario de ofertas.
+    if ( is_singular() ) {
+        global $post;
+        if ( isset( $post->post_content ) && has_shortcode( $post->post_content, 'cdb_form_oferta' ) ) {
+            wp_enqueue_script(
+                'cdb-empleo-script',
+                CDB_EMPLEO_URL . 'assets/js/script-ofertas.js',
+                array( 'jquery', 'jquery-ui-autocomplete' ),
+                '1.0.0',
+                true
+            );
 
-    wp_localize_script(
-        'cdb-empleo-script',
-        'ajaxurl',
-        admin_url( 'admin-ajax.php' )
-    );
+            wp_localize_script(
+                'cdb-empleo-script',
+                'cdbEmpleo',
+                array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) )
+            );
+        }
+    }
 
 }
 add_action( 'wp_enqueue_scripts', 'cdb_empleo_enqueue_scripts' );

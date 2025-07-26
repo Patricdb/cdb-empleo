@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
         // Preparar datos para el envío vía AJAX.
         var formData = new FormData(this);
         $.ajax({
-            url: ajaxurl, // ajaxurl se define mediante wp_localize_script
+            url: cdbEmpleo.ajaxurl, // definido mediante wp_localize_script
             type: "POST",
             data: formData,
             processData: false,
