@@ -1,7 +1,25 @@
-.cdb-aviso {
+.cdb-aviso,
+.cdb-aviso-aviso,
+.cdb-aviso-info,
+.cdb-aviso-exito {
     padding: 10px;
     border-radius: 4px;
     margin: 5px 0;
+}
+
+.cdb-aviso-aviso {
+    background-color: #f0ad4e;
+    color: #000000;
+}
+
+.cdb-aviso-info {
+    background-color: #5bc0de;
+    color: #ffffff;
+}
+
+.cdb-aviso-exito {
+    background-color: #5cb85c;
+    color: #ffffff;
 }
 .cdb-aviso .cdb-mensaje-principal {
     font-weight: bold;
@@ -10,7 +28,8 @@
     display: block;
     font-size: 0.9em;
 }
-.cdb-mensaje-row {
+.cdb-mensaje-row,
+.cdb-tipo-color-row {
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 15px;
