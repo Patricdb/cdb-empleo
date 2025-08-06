@@ -1,0 +1,21 @@
+.cdb-aviso {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+.cdb-aviso .cdb-mensaje-principal {
+    font-weight: bold;
+}
+.cdb-aviso .cdb-mensaje-secundario {
+    display: block;
+    font-size: 0.9em;
+}
+.cdb-mensaje-row {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #fff;
+}
+.cdb-aviso-preview {
+    margin-bottom: 10px;
+}
