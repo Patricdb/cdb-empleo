@@ -1,0 +1,19 @@
+.cdb-empleo-config-mensajes .cdb-mensaje-row {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.cdb-empleo-config-mensajes .cdb-color-field {
+    width: 120px;
+}
+
+.cdb-empleo-config-mensajes .cdb-color-preview {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
