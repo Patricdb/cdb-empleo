@@ -80,13 +80,13 @@ jQuery(document).ready(function($) {
                 $btn.prop("disabled", false);
                 if (response.success) {
                     $("#cdb_oferta_mensaje")
-                        .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-exito')
+                        .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-success')
                         .html("<p>" + response.data.message + "</p>");
                     if (response.data.reload) {
                         window.location.reload();
                     }
                 } else {
-                    var errorMsg = response.message || (response.data && response.data.message) || 'Ocurrió un error.';
+                    var errorMsg = response.message || (response.data && response.data.message) || mensajes.error_generico || 'Ocurrió un error.';
                     $("#cdb_oferta_mensaje")
                         .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-error')
                         .html("<p>Error: " + errorMsg + "</p>");

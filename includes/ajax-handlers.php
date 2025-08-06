@@ -14,7 +14,7 @@ function cdb_guardar_oferta_callback() {
    // Verificar que el usuario esté conectado y tenga permisos para crear ofertas
     $current_user = wp_get_current_user();
     if ( ! $current_user->exists() || ! current_user_can( 'create_oferta_empleo' ) ) {
-        wp_send_json_error( array( 'message' => 'No tienes permisos para realizar esta acción.' ) );
+        wp_send_json_error( array( 'message' => cdb_empleo_get_mensaje( 'sin_permisos', __( 'No tienes permisos para realizar esta acción.', 'cdb-empleo' ) ) ) );
     }
 
 
@@ -29,14 +29,14 @@ function cdb_guardar_oferta_callback() {
 
     // Validar que se hayan completado todos los campos requeridos.
     if ( empty( $bar_id ) || empty( $posicion_id ) || empty( $tipo_oferta ) || empty( $fecha_incorporacion ) || empty( $fecha_fin ) || $nivel_salarial === '' || empty( $funciones ) ) {
-        wp_send_json_error( array( 'message' => 'Por favor, completa todos los campos requeridos.' ) );
+        wp_send_json_error( array( 'message' => cdb_empleo_get_mensaje( 'campos_requeridos', __( 'Por favor, completa todos los campos requeridos.', 'cdb-empleo' ) ) ) );
     }
 
     // Verificar coherencia de las fechas
     $inicio_ts = strtotime( $fecha_incorporacion );
     $fin_ts    = strtotime( $fecha_fin );
     if ( false !== $inicio_ts && false !== $fin_ts && $inicio_ts >= $fin_ts ) {
-        wp_send_json_error( array( 'message' => 'La fecha de incorporación debe ser anterior a la fecha de fin.' ) );
+        wp_send_json_error( array( 'message' => cdb_empleo_get_mensaje( 'fecha_incorrecta', __( 'La fecha de incorporación debe ser anterior a la fecha de fin.', 'cdb-empleo' ) ) ) );
     }
 
     // Crear un título para la oferta (por ejemplo, combinando el nombre del bar y el tipo de oferta).
@@ -55,7 +55,7 @@ function cdb_guardar_oferta_callback() {
     $post_id = wp_insert_post( $post_data );
 
     if ( is_wp_error( $post_id ) ) {
-        wp_send_json_error( array( 'message' => 'Error al crear la oferta.' ) );
+        wp_send_json_error( array( 'message' => cdb_empleo_get_mensaje( 'error_crear_oferta', __( 'Error al crear la oferta.', 'cdb-empleo' ) ) ) );
     }
 
     // Guardar los campos personalizados como meta.
@@ -68,7 +68,7 @@ function cdb_guardar_oferta_callback() {
     update_post_meta( $post_id, 'cdb_funciones', $funciones );
 
     wp_send_json_success( array(
-        'message' => 'Oferta de empleo registrada exitosamente.',
+        'message' => cdb_empleo_get_mensaje( 'oferta_creada', __( 'Oferta de empleo registrada exitosamente.', 'cdb-empleo' ) ),
         'post_id' => $post_id,
         'reload'  => true, // Indica si se debe recargar la página
     ) );
