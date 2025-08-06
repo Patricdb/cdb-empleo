@@ -7,13 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Verificar si el usuario está conectado.
 $current_user = wp_get_current_user();
 if ( ! $current_user->exists() ) {
-    cdb_empleo_render_mensaje( 'login_required', 'error', __( 'Debes iniciar sesión para gestionar ofertas de empleo.', 'cdb-empleo' ) );
+    echo '<p>Debes iniciar sesión para gestionar ofertas de empleo.</p>';
     return;
 }
 
 // Verificar si el usuario tiene el rol "Empleador" o "Administrator"
 if ( ! in_array( 'empleador', (array) $current_user->roles ) && ! in_array( 'administrator', (array) $current_user->roles ) ) {
-    cdb_empleo_render_mensaje( 'sin_permisos', 'error', __( 'No tienes permisos para gestionar ofertas de empleo.', 'cdb-empleo' ) );
+    echo '<p></p>';
     return;
 }
 

@@ -192,26 +192,25 @@ function cdb_empleo_mensajes_frontend_assets() {
         'campos_requeridos' => cdb_empleo_get_mensaje( 'campos_requeridos', __( 'Por favor, completa todos los campos requeridos.', 'cdb-empleo' ) ),
         'fecha_incorrecta'  => cdb_empleo_get_mensaje( 'fecha_incorrecta', __( 'La fecha y hora de incorporación debe ser anterior a la fecha y hora de fin.', 'cdb-empleo' ) ),
         'error_solicitud'   => cdb_empleo_get_mensaje( 'error_solicitud', __( 'Error en la solicitud.', 'cdb-empleo' ) ),
-        'error_generico'    => cdb_empleo_get_mensaje( 'error_generico', __( 'Ocurrió un error.', 'cdb-empleo' ) ),
     );
 
     wp_localize_script( 'cdb-empleo-script', 'cdbEmpleoMensajes', $mensajes );
 }
 add_action( 'wp_enqueue_scripts', 'cdb_empleo_mensajes_frontend_assets', 20 );
 
-// Registrar tipos base y mensajes configurables.
+// Registrar algunos tipos por defecto.
 cdb_empleo_register_tipo_color(
-    'success',
+    'exito',
     array(
         'label' => __( 'Éxito', 'cdb-empleo' ),
         'color' => '#28a745',
     )
 );
 cdb_empleo_register_tipo_color(
-    'info',
+    'aviso',
     array(
-        'label' => __( 'Info', 'cdb-empleo' ),
-        'color' => '#17a2b8',
+        'label' => __( 'Aviso', 'cdb-empleo' ),
+        'color' => '#ffc107',
     )
 );
 cdb_empleo_register_tipo_color(
@@ -219,126 +218,6 @@ cdb_empleo_register_tipo_color(
     array(
         'label' => __( 'Error', 'cdb-empleo' ),
         'color' => '#dc3545',
-    )
-);
-
-cdb_empleo_register_tipo_color(
-    'login_required',
-    array(
-        'label' => __( 'Login requerido', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'sin_permisos',
-    array(
-        'label' => __( 'Sin permisos', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'campos_requeridos',
-    array(
-        'label' => __( 'Campos requeridos', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'fecha_incorrecta',
-    array(
-        'label' => __( 'Fecha incorrecta', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'error_solicitud',
-    array(
-        'label' => __( 'Error solicitud', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'error_generico',
-    array(
-        'label' => __( 'Error genérico', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'error_crear_oferta',
-    array(
-        'label' => __( 'Error al crear oferta', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'oferta_creada',
-    array(
-        'label' => __( 'Oferta creada', 'cdb-empleo' ),
-        'color' => '#28a745',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'ya_suscrito',
-    array(
-        'label' => __( 'Ya suscrito', 'cdb-empleo' ),
-        'color' => '#dc3545',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'suscripcion_ok',
-    array(
-        'label' => __( 'Suscripción correcta', 'cdb-empleo' ),
-        'color' => '#28a745',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'suscripcion_eliminada',
-    array(
-        'label' => __( 'Suscripción eliminada', 'cdb-empleo' ),
-        'color' => '#28a745',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'no_suscripciones',
-    array(
-        'label' => __( 'Sin suscripciones', 'cdb-empleo' ),
-        'color' => '#17a2b8',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'no_ofertas_disponibles',
-    array(
-        'label' => __( 'No hay ofertas disponibles', 'cdb-empleo' ),
-        'color' => '#17a2b8',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'no_ofertas',
-    array(
-        'label' => __( 'No hay ofertas', 'cdb-empleo' ),
-        'color' => '#17a2b8',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'oferta_comenzada',
-    array(
-        'label' => __( 'Oferta comenzada', 'cdb-empleo' ),
-        'color' => '#17a2b8',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'faltan_dias_horas',
-    array(
-        'label' => __( 'Cuenta atrás', 'cdb-empleo' ),
-        'color' => '#17a2b8',
-    )
-);
-cdb_empleo_register_tipo_color(
-    'no_suscripciones_oferta',
-    array(
-        'label' => __( 'Oferta sin suscripciones', 'cdb-empleo' ),
-        'color' => '#17a2b8',
     )
 );
 
