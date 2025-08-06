@@ -80,7 +80,7 @@ function cdb_empleo_listado_shortcode( $atts ) {
         echo '</div>';
         wp_reset_postdata();
     } else {
-        echo '<p>No hay ofertas disponibles.</p>';
+        echo cdb_empleo_render_mensaje( 'no_ofertas_disponibles', 'info', __( 'No hay ofertas disponibles.', 'cdb-empleo' ) );
     }
     
     return ob_get_clean();
@@ -106,7 +106,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
 
     // Verificar si el usuario está logueado.
     if ( ! is_user_logged_in() ) {
-        return '<p>Debes iniciar sesión para suscribirte a esta oferta.</p>';
+        return cdb_empleo_render_mensaje( 'login_required', 'error', __( 'Debes iniciar sesión para suscribirte a esta oferta.', 'cdb-empleo' ), false );
     }
 
     $user_id = get_current_user_id();
@@ -117,7 +117,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
 
     // Verificar si el usuario ya está suscrito.
     if ( in_array( $user_id, $suscripciones ) ) {
-        return '<p>Ya estás suscrito a esta oferta.</p>';
+        return cdb_empleo_render_mensaje( 'ya_suscrito', 'error', __( 'Ya estás suscrito a esta oferta.', 'cdb-empleo' ), false );
     }
 
     // Procesar la suscripción al recibir el formulario
@@ -128,7 +128,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
         $suscripciones[] = $user_id;
         update_post_meta( $oferta_id, '_cdb_oferta_inscripciones', $suscripciones );
 
-        return '<p>¡Te has suscrito correctamente a la oferta!</p>';
+        return cdb_empleo_render_mensaje( 'suscripcion_ok', 'success', __( '¡Te has suscrito correctamente a la oferta!', 'cdb-empleo' ), false );
     }
 
     // Mostrar el formulario de suscripción
@@ -169,7 +169,7 @@ function cdb_ofertas_inscripciones_meta_box_callback( $post ) {
 
     // Si no es un array o está vacío, mostramos un mensaje
     if ( ! is_array( $suscripciones ) || empty( $suscripciones ) ) {
-        echo '<p>No hay suscripciones para esta oferta.</p>';
+        cdb_empleo_render_mensaje( 'no_suscripciones_oferta', 'info', __( 'No hay suscripciones para esta oferta.', 'cdb-empleo' ) );
         return;
     }
 
@@ -194,7 +194,7 @@ function cdb_ofertas_inscripciones_meta_box_callback( $post ) {
 function cdb_empleo_suscritos_shortcode( $atts ) {
     // Verificar que el usuario esté logueado
     if ( ! is_user_logged_in() ) {
-        return '<p>Debes iniciar sesión para ver tus ofertas suscritas.</p>';
+        return cdb_empleo_render_mensaje( 'login_required', 'error', __( 'Debes iniciar sesión para ver tus ofertas suscritas.', 'cdb-empleo' ), false );
     }
 
     $user_id = get_current_user_id();
@@ -217,7 +217,7 @@ function cdb_empleo_suscritos_shortcode( $atts ) {
         if ( $key !== false ) {
             unset( $suscripciones[$key] );
             update_post_meta( $oferta_id_to_remove, '_cdb_oferta_inscripciones', $suscripciones );
-            $mensaje_accion = '<p>Has eliminado tu suscripción a la oferta.</p>';
+            $mensaje_accion = cdb_empleo_render_mensaje( 'suscripcion_eliminada', 'success', __( 'Has eliminado tu suscripción a la oferta.', 'cdb-empleo' ), false );
         }
     }
 
@@ -241,7 +241,7 @@ function cdb_empleo_suscritos_shortcode( $atts ) {
 
     // 3) Si no hay ofertas, avisar
     if ( ! $query->have_posts() ) {
-        return $mensaje_accion . '<p>No estás suscrito a ninguna oferta de empleo.</p>';
+        return $mensaje_accion . cdb_empleo_render_mensaje( 'no_suscripciones', 'info', __( 'No estás suscrito a ninguna oferta de empleo.', 'cdb-empleo' ), false );
     }
 
     // 4) Mostrar la lista de ofertas con posibilidad de eliminar la suscripción
@@ -264,15 +264,12 @@ function cdb_empleo_suscritos_shortcode( $atts ) {
                 $now = new DateTime( 'now', wp_timezone() );
                 $interval = $now->diff( $oferta_datetime );
                 if ( $interval->invert ) {
-                    $countdown_text = '<p class="countdown">La oferta ya ha comenzado.</p>';
+                    $countdown_text = '<p class="countdown">' . esc_html( cdb_empleo_get_mensaje( 'oferta_comenzada', __( 'La oferta ya ha comenzado.', 'cdb-empleo' ) ) ) . '</p>';
                 } else {
                     $days  = $interval->days;
                     $hours = $interval->h;
-                    $countdown_text = sprintf(
-                        '<p class="countdown">Faltan %d días y %d horas para el inicio de la oferta.</p>',
-                        $days,
-                        $hours
-                    );
+                    $template = cdb_empleo_get_mensaje( 'faltan_dias_horas', __( 'Faltan %d días y %d horas para el inicio de la oferta.', 'cdb-empleo' ) );
+                    $countdown_text = '<p class="countdown">' . sprintf( esc_html( $template ), $days, $hours ) . '</p>';
                 }
             }
         }

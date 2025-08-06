@@ -55,7 +55,7 @@ get_header(); ?>
         ?>
         
     <?php else : ?>
-        <p>No hay ofertas de empleo publicadas.</p>
+        <?php cdb_empleo_render_mensaje( 'no_ofertas', 'info', __( 'No hay ofertas de empleo publicadas.', 'cdb-empleo' ) ); ?>
     <?php endif; ?>
 </div>
 
