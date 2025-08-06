@@ -102,26 +102,35 @@ function cdb_empleo_get_mensajes_defaults() {
 function cdb_empleo_get_tipos_color() {
     $defaults = array(
         'aviso' => array(
-            'nombre' => __( 'Aviso', 'cdb-empleo' ),
-            'class'  => 'cdb-aviso-aviso',
-            'color'  => '#f0ad4e',
-            'text'   => '#000000',
+            'name'  => __( 'Aviso', 'cdb-empleo' ),
+            'class' => 'cdb-aviso-aviso',
+            'color' => '#f0ad4e',
+            'text'  => '#000000',
         ),
         'info' => array(
-            'nombre' => __( 'Info', 'cdb-empleo' ),
-            'class'  => 'cdb-aviso-info',
-            'color'  => '#5bc0de',
-            'text'   => '#ffffff',
+            'name'  => __( 'Info', 'cdb-empleo' ),
+            'class' => 'cdb-aviso-info',
+            'color' => '#5bc0de',
+            'text'  => '#ffffff',
         ),
         'exito' => array(
-            'nombre' => __( 'Éxito', 'cdb-empleo' ),
-            'class'  => 'cdb-aviso-exito',
-            'color'  => '#5cb85c',
-            'text'   => '#ffffff',
+            'name'  => __( 'Éxito', 'cdb-empleo' ),
+            'class' => 'cdb-aviso-exito',
+            'color' => '#5cb85c',
+            'text'  => '#ffffff',
         ),
     );
 
     $tipos = get_option( 'cdb_empleo_tipos_color', array() );
+
+    // Normalize legacy keys.
+    foreach ( $tipos as &$t ) {
+        if ( isset( $t['nombre'] ) && ! isset( $t['name'] ) ) {
+            $t['name'] = $t['nombre'];
+            unset( $t['nombre'] );
+        }
+    }
+    unset( $t );
 
     return wp_parse_args( $tipos, $defaults );
 }
@@ -134,7 +143,7 @@ function cdb_empleo_register_tipo_color( $slug, $args ) {
         return;
     }
     $tipos = cdb_empleo_get_tipos_color();
-    $tipos[ $slug ] = wp_parse_args( $args, array( 'nombre' => $slug, 'class' => 'cdb-aviso-' . $slug, 'color' => '#cccccc', 'text' => '#000000' ) );
+    $tipos[ $slug ] = wp_parse_args( $args, array( 'name' => $slug, 'class' => 'cdb-aviso-' . $slug, 'color' => '#cccccc', 'text' => '#000000' ) );
     update_option( 'cdb_empleo_tipos_color', $tipos );
 }
 
