@@ -1,7 +1,6 @@
 jQuery(document).ready(function($) {
     // Flag global para evitar doble envío
     var isSubmitting = false;
-    var mensajes = window.cdbEmpleoMensajes || {};
     
     // Inicializar Autocomplete para el campo "Bar"
     if ($('#bar-search').length) {
@@ -44,9 +43,7 @@ jQuery(document).ready(function($) {
             }
         });
         if (!valid) {
-            $("#cdb_oferta_mensaje")
-                .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-error')
-                .html("<p>" + (mensajes.campos_requeridos || 'Por favor, completa todos los campos requeridos.') + "</p>");
+            $("#cdb_oferta_mensaje").html("<p>Por favor, completa todos los campos requeridos.</p>");
             isSubmitting = false;
             $btn.prop("disabled", false);
             return;
@@ -58,9 +55,7 @@ jQuery(document).ready(function($) {
         var dateIncorporacion = new Date(fechaIncorporacion);
         var dateFin = new Date(fechaFin);
         if (dateIncorporacion >= dateFin) {
-            $("#cdb_oferta_mensaje")
-                .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-error')
-                .html("<p>" + (mensajes.fecha_incorrecta || 'La fecha y hora de incorporación debe ser anterior a la fecha y hora de fin.') + "</p>");
+            $("#cdb_oferta_mensaje").html("<p>La fecha y hora de incorporación debe ser anterior a la fecha y hora de fin.</p>");
             isSubmitting = false;
             $btn.prop("disabled", false);
             return;
@@ -79,26 +74,20 @@ jQuery(document).ready(function($) {
                 isSubmitting = false;
                 $btn.prop("disabled", false);
                 if (response.success) {
-                    $("#cdb_oferta_mensaje")
-                        .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-exito')
-                        .html("<p>" + response.data.message + "</p>");
+                    $("#cdb_oferta_mensaje").html("<p>" + response.data.message + "</p>");
                     if (response.data.reload) {
                         window.location.reload();
                     }
                 } else {
                     var errorMsg = response.message || (response.data && response.data.message) || 'Ocurrió un error.';
-                    $("#cdb_oferta_mensaje")
-                        .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-error')
-                        .html("<p>Error: " + errorMsg + "</p>");
+                    $("#cdb_oferta_mensaje").html("<p>Error: " + errorMsg + "</p>");
                 }
             },
             error: function(xhr, status, error) {
                 console.error("Error:", error);
                 isSubmitting = false;
                 $btn.prop("disabled", false);
-                $("#cdb_oferta_mensaje")
-                    .attr('class', 'cdb-empleo-mensaje cdb-empleo-mensaje-error')
-                    .html("<p>" + (mensajes.error_solicitud || 'Error en la solicitud.') + "</p>");
+                $("#cdb_oferta_mensaje").html("<p>Error en la solicitud.</p>");
             }
         });
     });

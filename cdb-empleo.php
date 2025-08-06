@@ -33,5 +33,4 @@ require_once CDB_EMPLEO_PATH . 'includes/roles-permisos.php';
 require_once CDB_EMPLEO_PATH . 'includes/scripts.php';
 require_once CDB_EMPLEO_PATH . 'includes/shortcodes.php';
 require_once CDB_EMPLEO_PATH . 'includes/funciones.php';
-require_once CDB_EMPLEO_PATH . 'includes/config-mensajes.php';
 
