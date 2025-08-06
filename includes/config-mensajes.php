@@ -78,6 +78,24 @@ function cdb_empleo_config_mensajes_page() {
             update_option( 'cdb_empleo_color_' . $clave, $tipo );
             update_option( 'cdb_empleo_mensaje_' . $clave . '_mostrar', $mostrar );
         }
+
+        if ( isset( $_POST['tipos_color'] ) && is_array( $_POST['tipos_color'] ) ) {
+            $tipos_guardar = array();
+            foreach ( $_POST['tipos_color'] as $tipo ) {
+                $slug = isset( $tipo['slug'] ) ? sanitize_title( $tipo['slug'] ) : '';
+                if ( empty( $slug ) ) {
+                    continue;
+                }
+                $tipos_guardar[ $slug ] = array(
+                    'nombre' => isset( $tipo['nombre'] ) ? sanitize_text_field( $tipo['nombre'] ) : '',
+                    'class'  => isset( $tipo['class'] ) ? sanitize_text_field( $tipo['class'] ) : '',
+                    'color'  => isset( $tipo['color'] ) ? sanitize_hex_color( $tipo['color'] ) : '',
+                    'text'   => isset( $tipo['text'] ) ? sanitize_hex_color( $tipo['text'] ) : '',
+                );
+            }
+            update_option( 'cdb_empleo_tipos_color', $tipos_guardar );
+            $tipos = cdb_empleo_get_tipos_color();
+        }
         echo '<div class="updated"><p>' . esc_html__( 'Ajustes guardados.', 'cdb-empleo' ) . '</p></div>';
     }
 
@@ -104,6 +122,29 @@ function cdb_empleo_config_mensajes_page() {
         echo '<p><label><input type="checkbox" class="cdb-mostrar-checkbox" data-preview="preview_' . esc_attr( $clave ) . '" name="cdb_empleo_mensaje_' . esc_attr( $clave ) . '_mostrar" value="1" ' . checked( $mostrar, 1, false ) . ' /> ' . esc_html__( 'Mostrar aviso', 'cdb-empleo' ) . '</label></p>';
         echo '</div>';
     }
+
+    echo '<h2>' . esc_html__( 'Tipos de aviso', 'cdb-empleo' ) . '</h2>';
+    echo '<table class="widefat" id="cdb-tipos-color"><thead><tr>';
+    echo '<th>' . esc_html__( 'Slug', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Nombre', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Clase', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Color', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Texto', 'cdb-empleo' ) . '</th>';
+    echo '<th></th></tr></thead><tbody>';
+    $i = 0;
+    foreach ( $tipos as $slug => $t ) {
+        echo '<tr>';
+        echo '<td><input type="text" name="tipos_color[' . $i . '][slug]" value="' . esc_attr( $slug ) . '" /></td>';
+        echo '<td><input type="text" name="tipos_color[' . $i . '][nombre]" value="' . esc_attr( $t['nombre'] ) . '" /></td>';
+        echo '<td><input type="text" name="tipos_color[' . $i . '][class]" value="' . esc_attr( $t['class'] ) . '" /></td>';
+        echo '<td><input type="color" name="tipos_color[' . $i . '][color]" value="' . esc_attr( $t['color'] ) . '" /></td>';
+        echo '<td><input type="color" name="tipos_color[' . $i . '][text]" value="' . esc_attr( $t['text'] ) . '" /></td>';
+        echo '<td><button type="button" class="button cdb-remove-row">&times;</button></td>';
+        echo '</tr>';
+        $i++;
+    }
+    echo '</tbody></table>';
+    echo '<p><button type="button" class="button" id="cdb-add-color-row">' . esc_html__( 'Añadir tipo', 'cdb-empleo' ) . '</button></p>';
 
     submit_button();
     echo '</form></div>';
