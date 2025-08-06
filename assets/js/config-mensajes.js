@@ -24,7 +24,7 @@ jQuery(document).ready(function($){
         var index = table.find('tr').length;
         var row = $('<tr />');
         row.append('<td><input type="text" name="tipos_color[' + index + '][slug]" /></td>');
-        row.append('<td><input type="text" name="tipos_color[' + index + '][nombre]" /></td>');
+        row.append('<td><input type="text" name="tipos_color[' + index + '][name]" /></td>');
         row.append('<td><input type="text" name="tipos_color[' + index + '][class]" /></td>');
         row.append('<td><input type="color" name="tipos_color[' + index + '][color]" value="#ffffff" /></td>');
         row.append('<td><input type="color" name="tipos_color[' + index + '][text]" value="#000000" /></td>');

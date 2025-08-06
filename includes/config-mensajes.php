@@ -7,16 +7,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Register admin menu and page for message configuration.
  */
 function cdb_empleo_mensajes_admin_menu() {
-    // Ensure main menu exists
-    add_menu_page(
-        __( 'CdB Empleo', 'cdb-empleo' ),
-        __( 'CdB Empleo', 'cdb-empleo' ),
-        'manage_options',
-        'cdb-empleo',
-        '__return_null',
-        'dashicons-id',
-        26
-    );
+    // Ensure main menu exists only once.
+    global $admin_page_hooks;
+    if ( ! isset( $admin_page_hooks['cdb-empleo'] ) ) {
+        add_menu_page(
+            __( 'CdB Empleo', 'cdb-empleo' ),
+            __( 'CdB Empleo', 'cdb-empleo' ),
+            'manage_options',
+            'cdb-empleo',
+            '__return_null',
+            'dashicons-id',
+            26
+        );
+    }
 
     add_submenu_page(
         'cdb-empleo',
@@ -26,6 +29,9 @@ function cdb_empleo_mensajes_admin_menu() {
         'cdb-empleo-config-mensajes',
         'cdb_empleo_config_mensajes_page'
     );
+
+    // Remove duplicated submenu pointing to the top-level page.
+    remove_submenu_page( 'cdb-empleo', 'cdb-empleo' );
 }
 add_action( 'admin_menu', 'cdb_empleo_mensajes_admin_menu' );
 
@@ -87,10 +93,10 @@ function cdb_empleo_config_mensajes_page() {
                     continue;
                 }
                 $tipos_guardar[ $slug ] = array(
-                    'nombre' => isset( $tipo['nombre'] ) ? sanitize_text_field( $tipo['nombre'] ) : '',
-                    'class'  => isset( $tipo['class'] ) ? sanitize_text_field( $tipo['class'] ) : '',
-                    'color'  => isset( $tipo['color'] ) ? sanitize_hex_color( $tipo['color'] ) : '',
-                    'text'   => isset( $tipo['text'] ) ? sanitize_hex_color( $tipo['text'] ) : '',
+                    'name'  => isset( $tipo['name'] ) ? sanitize_text_field( $tipo['name'] ) : '',
+                    'class' => isset( $tipo['class'] ) ? sanitize_text_field( $tipo['class'] ) : '',
+                    'color' => isset( $tipo['color'] ) ? sanitize_hex_color( $tipo['color'] ) : '',
+                    'text'  => isset( $tipo['text'] ) ? sanitize_hex_color( $tipo['text'] ) : '',
                 );
             }
             update_option( 'cdb_empleo_tipos_color', $tipos_guardar );
@@ -116,7 +122,7 @@ function cdb_empleo_config_mensajes_page() {
         echo '<p><label>' . esc_html__( 'Texto secundario', 'cdb-empleo' ) . '<br><input type="text" class="cdb-mensaje-input" data-preview="preview_' . esc_attr( $clave ) . '" name="cdb_empleo_mensaje_' . esc_attr( $clave ) . '_secundario" value="' . esc_attr( $sec ) . '" /></label></p>';
         echo '<p><label>' . esc_html__( 'Tipo / Color', 'cdb-empleo' ) . '<br><select name="cdb_empleo_color_' . esc_attr( $clave ) . '">';
         foreach ( $tipos as $slug => $t ) {
-            echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $tipo, $slug, false ) . '>' . esc_html( $t['nombre'] ) . '</option>';
+            echo '<option value="' . esc_attr( $slug ) . '" ' . selected( $tipo, $slug, false ) . '>' . esc_html( $t['name'] ) . '</option>';
         }
         echo '</select></label></p>';
         echo '<p><label><input type="checkbox" class="cdb-mostrar-checkbox" data-preview="preview_' . esc_attr( $clave ) . '" name="cdb_empleo_mensaje_' . esc_attr( $clave ) . '_mostrar" value="1" ' . checked( $mostrar, 1, false ) . ' /> ' . esc_html__( 'Mostrar aviso', 'cdb-empleo' ) . '</label></p>';
@@ -135,7 +141,7 @@ function cdb_empleo_config_mensajes_page() {
     foreach ( $tipos as $slug => $t ) {
         echo '<tr>';
         echo '<td><input type="text" name="tipos_color[' . $i . '][slug]" value="' . esc_attr( $slug ) . '" /></td>';
-        echo '<td><input type="text" name="tipos_color[' . $i . '][nombre]" value="' . esc_attr( $t['nombre'] ) . '" /></td>';
+        echo '<td><input type="text" name="tipos_color[' . $i . '][name]" value="' . esc_attr( $t['name'] ) . '" /></td>';
         echo '<td><input type="text" name="tipos_color[' . $i . '][class]" value="' . esc_attr( $t['class'] ) . '" /></td>';
         echo '<td><input type="color" name="tipos_color[' . $i . '][color]" value="' . esc_attr( $t['color'] ) . '" /></td>';
         echo '<td><input type="color" name="tipos_color[' . $i . '][text]" value="' . esc_attr( $t['text'] ) . '" /></td>';
