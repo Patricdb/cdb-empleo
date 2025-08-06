@@ -30,6 +30,8 @@ require_once CDB_EMPLEO_PATH . 'includes/cpt-oferta-empleo.php';
 require_once CDB_EMPLEO_PATH . 'includes/metaboxes.php';
 require_once CDB_EMPLEO_PATH . 'includes/ajax-handlers.php';
 require_once CDB_EMPLEO_PATH . 'includes/roles-permisos.php';
+require_once CDB_EMPLEO_PATH . 'includes/messages.php';
+require_once CDB_EMPLEO_PATH . 'includes/config-mensajes.php';
 require_once CDB_EMPLEO_PATH . 'includes/scripts.php';
 require_once CDB_EMPLEO_PATH . 'includes/shortcodes.php';
 require_once CDB_EMPLEO_PATH . 'includes/funciones.php';

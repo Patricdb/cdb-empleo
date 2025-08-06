@@ -28,32 +28,32 @@ function cdb_empleo_listado_shortcode( $atts ) {
     $atts = shortcode_atts( array(
         'posts_per_page' => 10,
     ), $atts, 'cdb_listado_ofertas' );
-    
+
     $query_args = array(
         'post_type'      => 'oferta_empleo',
         'posts_per_page' => intval( $atts['posts_per_page'] ),
         'post_status'    => 'publish',
     );
-    
+
     $query = new WP_Query( $query_args );
     ob_start();
-    
+
     if ( $query->have_posts() ) {
         echo '<div class="ofertas-grid">';
         while ( $query->have_posts() ) {
             $query->the_post();
-            $bar_id = get_post_meta( get_the_ID(), 'cdb_bar', true );
-            $posicion_id = get_post_meta( get_the_ID(), 'cdb_posicion', true );
-            $tipo_oferta = get_post_meta( get_the_ID(), 'cdb_tipo_oferta', true );
-            $fecha_incorporacion = get_post_meta( get_the_ID(), 'cdb_fecha_incorporacion', true );
-            $fecha_fin = get_post_meta( get_the_ID(), 'cdb_fecha_fin', true );
-            
+            $bar_id             = get_post_meta( get_the_ID(), 'cdb_bar', true );
+            $posicion_id        = get_post_meta( get_the_ID(), 'cdb_posicion', true );
+            $tipo_oferta        = get_post_meta( get_the_ID(), 'cdb_tipo_oferta', true );
+            $fecha_incorporacion= get_post_meta( get_the_ID(), 'cdb_fecha_incorporacion', true );
+            $fecha_fin          = get_post_meta( get_the_ID(), 'cdb_fecha_fin', true );
+
             // Formatear las fechas con hora en formato 24h
-            $fecha_incorporacion_formatted = $fecha_incorporacion 
-                ? date_i18n( 'H:i \d\e\l l d \d\e F \d\e Y', strtotime( $fecha_incorporacion ) ) 
+            $fecha_incorporacion_formatted = $fecha_incorporacion
+                ? date_i18n( 'H:i \d\e\l l d \d\e F \d\e Y', strtotime( $fecha_incorporacion ) )
                 : '';
-            $fecha_fin_formatted = $fecha_fin 
-                ? date_i18n( 'H:i \d\e\l l d \d\e F \d\e Y', strtotime( $fecha_fin ) ) 
+            $fecha_fin_formatted = $fecha_fin
+                ? date_i18n( 'H:i \d\e\l l d \d\e F \d\e Y', strtotime( $fecha_fin ) )
                 : '';
             ?>
             <div class="oferta-card">
@@ -80,9 +80,9 @@ function cdb_empleo_listado_shortcode( $atts ) {
         echo '</div>';
         wp_reset_postdata();
     } else {
-        echo '<p>No hay ofertas disponibles.</p>';
+        echo cdb_empleo_get_mensaje( 'sin_ofertas' );
     }
-    
+
     return ob_get_clean();
 }
 add_shortcode( 'cdb_listado_ofertas', 'cdb_empleo_listado_shortcode' );
@@ -106,7 +106,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
 
     // Verificar si el usuario está logueado.
     if ( ! is_user_logged_in() ) {
-        return '<p>Debes iniciar sesión para suscribirte a esta oferta.</p>';
+        return cdb_empleo_get_mensaje( 'login_requerido' );
     }
 
     $user_id = get_current_user_id();
@@ -117,7 +117,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
 
     // Verificar si el usuario ya está suscrito.
     if ( in_array( $user_id, $suscripciones ) ) {
-        return '<p>Ya estás suscrito a esta oferta.</p>';
+        return cdb_empleo_get_mensaje( 'ya_suscrito' );
     }
 
     // Procesar la suscripción al recibir el formulario
@@ -128,7 +128,7 @@ function cdb_oferta_suscripcion_shortcode( $atts ) {
         $suscripciones[] = $user_id;
         update_post_meta( $oferta_id, '_cdb_oferta_inscripciones', $suscripciones );
 
-        return '<p>¡Te has suscrito correctamente a la oferta!</p>';
+        return cdb_empleo_get_mensaje( 'suscripcion_ok' );
     }
 
     // Mostrar el formulario de suscripción
@@ -169,7 +169,7 @@ function cdb_ofertas_inscripciones_meta_box_callback( $post ) {
 
     // Si no es un array o está vacío, mostramos un mensaje
     if ( ! is_array( $suscripciones ) || empty( $suscripciones ) ) {
-        echo '<p>No hay suscripciones para esta oferta.</p>';
+        echo cdb_empleo_get_mensaje( 'sin_suscripciones' );
         return;
     }
 
@@ -194,7 +194,7 @@ function cdb_ofertas_inscripciones_meta_box_callback( $post ) {
 function cdb_empleo_suscritos_shortcode( $atts ) {
     // Verificar que el usuario esté logueado
     if ( ! is_user_logged_in() ) {
-        return '<p>Debes iniciar sesión para ver tus ofertas suscritas.</p>';
+        return cdb_empleo_get_mensaje( 'login_requerido' );
     }
 
     $user_id = get_current_user_id();
@@ -217,7 +217,7 @@ function cdb_empleo_suscritos_shortcode( $atts ) {
         if ( $key !== false ) {
             unset( $suscripciones[$key] );
             update_post_meta( $oferta_id_to_remove, '_cdb_oferta_inscripciones', $suscripciones );
-            $mensaje_accion = '<p>Has eliminado tu suscripción a la oferta.</p>';
+            $mensaje_accion = cdb_empleo_get_mensaje( 'suscripcion_eliminada' );
         }
     }
 
@@ -241,7 +241,7 @@ function cdb_empleo_suscritos_shortcode( $atts ) {
 
     // 3) Si no hay ofertas, avisar
     if ( ! $query->have_posts() ) {
-        return $mensaje_accion . '<p>No estás suscrito a ninguna oferta de empleo.</p>';
+        return $mensaje_accion . cdb_empleo_get_mensaje( 'no_suscrito' );
     }
 
     // 4) Mostrar la lista de ofertas con posibilidad de eliminar la suscripción

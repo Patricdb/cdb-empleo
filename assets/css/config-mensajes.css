@@ -1,0 +1,40 @@
+.cdb-aviso {
+    padding: 10px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+.cdb-aviso .cdb-mensaje-principal {
+    font-weight: bold;
+}
+.cdb-aviso .cdb-mensaje-secundario {
+    display: block;
+    font-size: 0.9em;
+}
+.cdb-mensaje-row {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    background: #fff;
+}
+.cdb-aviso-preview {
+    margin-bottom: 10px;
+}
+
+.cdb-tipo-color-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.cdb-tipo-color-row input[type="text"] {
+    width: 120px;
+}
+.cdb-color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+.cdb-tipo-color-row.deleting {
+    opacity: 0.5;
+}
