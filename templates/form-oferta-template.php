@@ -7,13 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Verificar si el usuario está conectado.
 $current_user = wp_get_current_user();
 if ( ! $current_user->exists() ) {
-    echo '<p>Debes iniciar sesión para gestionar ofertas de empleo.</p>';
+    echo cdb_empleo_get_mensaje( 'login_requerido' );
     return;
 }
 
 // Verificar si el usuario tiene el rol "Empleador" o "Administrator"
 if ( ! in_array( 'empleador', (array) $current_user->roles ) && ! in_array( 'administrator', (array) $current_user->roles ) ) {
-    echo '<p></p>';
+    echo cdb_empleo_get_mensaje( 'sin_permiso_form' );
     return;
 }
 

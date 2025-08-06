@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
             }
         });
         if (!valid) {
-            $("#cdb_oferta_mensaje").html("<p>Por favor, completa todos los campos requeridos.</p>");
+            $("#cdb_oferta_mensaje").html('<p>' + cdbEmpleo.mensajes.campos_requeridos + '</p>');
             isSubmitting = false;
             $btn.prop("disabled", false);
             return;
@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
         var dateIncorporacion = new Date(fechaIncorporacion);
         var dateFin = new Date(fechaFin);
         if (dateIncorporacion >= dateFin) {
-            $("#cdb_oferta_mensaje").html("<p>La fecha y hora de incorporación debe ser anterior a la fecha y hora de fin.</p>");
+            $("#cdb_oferta_mensaje").html('<p>' + cdbEmpleo.mensajes.fecha_invalida + '</p>');
             isSubmitting = false;
             $btn.prop("disabled", false);
             return;
@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
                         window.location.reload();
                     }
                 } else {
-                    var errorMsg = response.message || (response.data && response.data.message) || 'Ocurrió un error.';
+                    var errorMsg = response.message || (response.data && response.data.message) || cdbEmpleo.mensajes.error_generico;
                     $("#cdb_oferta_mensaje").html("<p>Error: " + errorMsg + "</p>");
                 }
             },
@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
                 console.error("Error:", error);
                 isSubmitting = false;
                 $btn.prop("disabled", false);
-                $("#cdb_oferta_mensaje").html("<p>Error en la solicitud.</p>");
+                $("#cdb_oferta_mensaje").html('<p>' + cdbEmpleo.mensajes.error_solicitud + '</p>');
             }
         });
     });
