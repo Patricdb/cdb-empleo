@@ -143,6 +143,10 @@ function cdb_empleo_register_tipo_color( $slug, $args ) {
         return;
     }
     $tipos = cdb_empleo_get_tipos_color();
+    if ( isset( $args['nombre'] ) && ! isset( $args['name'] ) ) {
+        $args['name'] = $args['nombre'];
+        unset( $args['nombre'] );
+    }
     $tipos[ $slug ] = wp_parse_args( $args, array( 'name' => $slug, 'class' => 'cdb-aviso-' . $slug, 'color' => '#cccccc', 'text' => '#000000' ) );
     update_option( 'cdb_empleo_tipos_color', $tipos );
 }
@@ -195,6 +199,21 @@ function cdb_empleo_get_mensaje( $clave ) {
     $html .= '</div>';
 
     return $html;
+}
+
+/**
+ * Get message string prepared for JavaScript contexts.
+ */
+function cdb_empleo_get_mensaje_js( $clave ) {
+    return esc_js( cdb_empleo_get_mensaje_text( $clave ) );
+}
+
+/**
+ * Get default message text for translation extraction.
+ */
+function cdb_empleo_get_mensaje_i18n( $clave ) {
+    $defaults = cdb_empleo_get_mensajes_defaults();
+    return isset( $defaults[ $clave ] ) ? $defaults[ $clave ]['texto'] : '';
 }
 
 function cdb_empleo_render_mensaje( $clave ) {
