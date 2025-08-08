@@ -1,32 +1,14 @@
-.cdb-aviso,
-.cdb-aviso-aviso,
-.cdb-aviso-info,
-.cdb-aviso-exito {
-    padding: 10px;
-    border-radius: 4px;
-    margin: 5px 0;
+.cdb-aviso{
+    padding:10px 15px;
+    margin:15px 0;
 }
-
-.cdb-aviso-aviso {
-    background-color: #f0ad4e;
-    color: #000000;
+.cdb-mensaje-destacado{
+    font-weight:700;
+    display:block;
 }
-
-.cdb-aviso-info {
-    background-color: #5bc0de;
-    color: #ffffff;
-}
-
-.cdb-aviso-exito {
-    background-color: #5cb85c;
-    color: #ffffff;
-}
-.cdb-aviso .cdb-mensaje-principal {
-    font-weight: bold;
-}
-.cdb-aviso .cdb-mensaje-secundario {
-    display: block;
-    font-size: 0.9em;
+.cdb-mensaje-secundario{
+    display:block;
+    font-size:.9em;
 }
 .cdb-mensaje-row,
 .cdb-tipo-color-row {

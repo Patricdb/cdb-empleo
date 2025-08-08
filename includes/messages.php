@@ -102,33 +102,56 @@ function cdb_empleo_get_mensajes_defaults() {
 function cdb_empleo_get_tipos_color() {
     $defaults = array(
         'aviso' => array(
-            'name'  => __( 'Aviso', 'cdb-empleo' ),
-            'class' => 'cdb-aviso-aviso',
-            'color' => '#f0ad4e',
-            'text'  => '#000000',
+            'name'         => __( 'Aviso', 'cdb-empleo' ),
+            'class'        => 'cdb-aviso--aviso',
+            'bg'           => '#dc2626',
+            'text'         => '#ffffff',
+            'border_color' => '#dc2626',
+            'border_width' => '0px',
+            'border_radius'=> '4px',
         ),
         'info' => array(
-            'name'  => __( 'Info', 'cdb-empleo' ),
-            'class' => 'cdb-aviso-info',
-            'color' => '#5bc0de',
-            'text'  => '#ffffff',
+            'name'         => __( 'Info', 'cdb-empleo' ),
+            'class'        => 'cdb-aviso--info',
+            'bg'           => '#5bc0de',
+            'text'         => '#ffffff',
+            'border_color' => '#5bc0de',
+            'border_width' => '0px',
+            'border_radius'=> '4px',
         ),
         'exito' => array(
-            'name'  => __( 'Éxito', 'cdb-empleo' ),
-            'class' => 'cdb-aviso-exito',
-            'color' => '#5cb85c',
-            'text'  => '#ffffff',
+            'name'         => __( 'Éxito', 'cdb-empleo' ),
+            'class'        => 'cdb-aviso--exito',
+            'bg'           => '#5cb85c',
+            'text'         => '#ffffff',
+            'border_color' => '#5cb85c',
+            'border_width' => '0px',
+            'border_radius'=> '4px',
         ),
     );
 
     $tipos = get_option( 'cdb_empleo_tipos_color', array() );
 
-    // Normalize legacy keys.
-    foreach ( $tipos as &$t ) {
+    // Normalize legacy keys and add new defaults.
+    foreach ( $tipos as $slug => &$t ) {
         if ( isset( $t['nombre'] ) && ! isset( $t['name'] ) ) {
             $t['name'] = $t['nombre'];
             unset( $t['nombre'] );
         }
+        if ( isset( $t['color'] ) && ! isset( $t['bg'] ) ) {
+            $t['bg'] = $t['color'];
+            unset( $t['color'] );
+        }
+        if ( ! isset( $t['class'] ) || false === strpos( $t['class'], 'cdb-aviso--' ) ) {
+            $t['class'] = 'cdb-aviso--' . $slug;
+        }
+        $t = wp_parse_args( $t, array(
+            'bg'           => isset( $defaults[ $slug ] ) ? $defaults[ $slug ]['bg'] : '#cccccc',
+            'text'         => isset( $defaults[ $slug ] ) ? $defaults[ $slug ]['text'] : '#000000',
+            'border_color' => isset( $defaults[ $slug ] ) ? $defaults[ $slug ]['border_color'] : '#cccccc',
+            'border_width' => '0px',
+            'border_radius'=> '4px',
+        ) );
     }
     unset( $t );
 
@@ -147,7 +170,19 @@ function cdb_empleo_register_tipo_color( $slug, $args ) {
         $args['name'] = $args['nombre'];
         unset( $args['nombre'] );
     }
-    $tipos[ $slug ] = wp_parse_args( $args, array( 'name' => $slug, 'class' => 'cdb-aviso-' . $slug, 'color' => '#cccccc', 'text' => '#000000' ) );
+    if ( isset( $args['color'] ) && ! isset( $args['bg'] ) ) {
+        $args['bg'] = $args['color'];
+        unset( $args['color'] );
+    }
+    $tipos[ $slug ] = wp_parse_args( $args, array(
+        'name'         => $slug,
+        'class'        => 'cdb-aviso--' . $slug,
+        'bg'           => '#cccccc',
+        'text'         => '#000000',
+        'border_color' => '#cccccc',
+        'border_width' => '0px',
+        'border_radius'=> '4px',
+    ) );
     update_option( 'cdb_empleo_tipos_color', $tipos );
 }
 
@@ -189,13 +224,12 @@ function cdb_empleo_get_mensaje( $clave ) {
         return '';
     }
 
-    $class = cdb_empleo_get_tipo_color_class( $tipo );
+    $class  = cdb_empleo_get_tipo_color_class( $tipo );
+    $legacy = 'cdb-aviso-' . $tipo;
 
-    $html  = '<div class="cdb-aviso ' . esc_attr( $class ) . '">';
-    $html .= '<span class="cdb-mensaje-principal">' . esc_html( $texto ) . '</span>';
-    if ( ! empty( $secundario ) ) {
-        $html .= ' <span class="cdb-mensaje-secundario">' . esc_html( $secundario ) . '</span>';
-    }
+    $html  = '<div class="cdb-aviso ' . esc_attr( $class ) . ' ' . esc_attr( $legacy ) . '">';
+    $html .= '<strong class="cdb-mensaje-destacado">' . esc_html( $texto ) . '</strong>';
+    $html .= '<span class="cdb-mensaje-secundario">' . esc_html( $secundario ) . '</span>';
     $html .= '</div>';
 
     return $html;
