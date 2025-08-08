@@ -42,10 +42,28 @@ function cdb_empleo_mensajes_admin_enqueue( $hook ) {
     if ( 'cdb-empleo_page_cdb-empleo-config-mensajes' !== $hook ) {
         return;
     }
+    wp_enqueue_style( 'wp-color-picker' );
     wp_enqueue_style( 'cdb-empleo-mensajes', CDB_EMPLEO_URL . 'assets/css/config-mensajes.css', array(), '1.0.0' );
-    wp_enqueue_script( 'cdb-empleo-config-mensajes', CDB_EMPLEO_URL . 'assets/js/config-mensajes.js', array( 'jquery' ), '1.0.0', true );
+    wp_enqueue_script( 'cdb-empleo-config-mensajes', CDB_EMPLEO_URL . 'assets/js/config-mensajes.js', array( 'jquery', 'wp-color-picker' ), '1.0.0', true );
 }
 add_action( 'admin_enqueue_scripts', 'cdb_empleo_mensajes_admin_enqueue' );
+
+/**
+ * Normalize CSS size values, defaulting to px.
+ */
+function cdb_empleo_normalize_size( $value, $default = '0px' ) {
+    $value = trim( (string) $value );
+    if ( '' === $value ) {
+        return $default;
+    }
+    if ( preg_match( '/^\d+(?:\.\d+)?(px|rem|em|%)$/', $value ) ) {
+        return $value;
+    }
+    if ( preg_match( '/^\d+(?:\.\d+)?$/', $value ) ) {
+        return $value . 'px';
+    }
+    return $default;
+}
 
 /**
  * Render the configuration page.
@@ -92,11 +110,20 @@ function cdb_empleo_config_mensajes_page() {
                 if ( empty( $slug ) ) {
                     continue;
                 }
+                $bg           = isset( $tipo['bg'] ) ? sanitize_hex_color( $tipo['bg'] ) : '';
+                $text         = isset( $tipo['text'] ) ? sanitize_hex_color( $tipo['text'] ) : '';
+                $border_color = isset( $tipo['border_color'] ) ? sanitize_hex_color( $tipo['border_color'] ) : '';
+                $border_width = isset( $tipo['border_width'] ) ? cdb_empleo_normalize_size( $tipo['border_width'], '0px' ) : '0px';
+                $border_radius = isset( $tipo['border_radius'] ) ? cdb_empleo_normalize_size( $tipo['border_radius'], '0px' ) : '0px';
+
                 $tipos_guardar[ $slug ] = array(
-                    'name'  => isset( $tipo['name'] ) ? sanitize_text_field( $tipo['name'] ) : '',
-                    'class' => isset( $tipo['class'] ) ? sanitize_text_field( $tipo['class'] ) : '',
-                    'color' => isset( $tipo['color'] ) ? sanitize_hex_color( $tipo['color'] ) : '',
-                    'text'  => isset( $tipo['text'] ) ? sanitize_hex_color( $tipo['text'] ) : '',
+                    'name'         => isset( $tipo['name'] ) ? sanitize_text_field( $tipo['name'] ) : '',
+                    'class'        => isset( $tipo['class'] ) ? sanitize_text_field( $tipo['class'] ) : '',
+                    'bg'           => $bg,
+                    'text'         => $text,
+                    'border_color' => $border_color,
+                    'border_width' => $border_width,
+                    'border_radius'=> $border_radius,
                 );
             }
             update_option( 'cdb_empleo_tipos_color', $tipos_guardar );
@@ -136,15 +163,38 @@ function cdb_empleo_config_mensajes_page() {
     echo '<th>' . esc_html__( 'Clase', 'cdb-empleo' ) . '</th>';
     echo '<th>' . esc_html__( 'Color', 'cdb-empleo' ) . '</th>';
     echo '<th>' . esc_html__( 'Texto', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Color del borde', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Grosor del borde', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Radio del borde', 'cdb-empleo' ) . '</th>';
+    echo '<th>' . esc_html__( 'Vista previa', 'cdb-empleo' ) . '</th>';
     echo '<th></th></tr></thead><tbody>';
     $i = 0;
     foreach ( $tipos as $slug => $t ) {
+        $style = 'background-color:' . esc_attr( $t['bg'] ) . ';color:' . esc_attr( $t['text'] ) . ';';
+        if ( '0px' === $t['border_width'] ) {
+            $style .= 'border-left:4px solid ' . esc_attr( $t['border_color'] ) . ';';
+        } else {
+            $style .= 'border:' . esc_attr( $t['border_width'] ) . ' solid ' . esc_attr( $t['border_color'] ) . ';';
+        }
+        $style .= 'border-radius:' . esc_attr( $t['border_radius'] ) . ';';
         echo '<tr>';
         echo '<td><input type="text" name="tipos_color[' . $i . '][slug]" value="' . esc_attr( $slug ) . '" /></td>';
         echo '<td><input type="text" name="tipos_color[' . $i . '][name]" value="' . esc_attr( $t['name'] ) . '" /></td>';
         echo '<td><input type="text" name="tipos_color[' . $i . '][class]" value="' . esc_attr( $t['class'] ) . '" /></td>';
-        echo '<td><input type="color" name="tipos_color[' . $i . '][color]" value="' . esc_attr( $t['color'] ) . '" /></td>';
-        echo '<td><input type="color" name="tipos_color[' . $i . '][text]" value="' . esc_attr( $t['text'] ) . '" /></td>';
+        echo '<td><input type="text" class="cdb-color-picker" name="tipos_color[' . $i . '][bg]" value="' . esc_attr( $t['bg'] ) . '" /></td>';
+        echo '<td><input type="text" class="cdb-color-picker" name="tipos_color[' . $i . '][text]" value="' . esc_attr( $t['text'] ) . '" /></td>';
+        echo '<td><input type="text" class="cdb-color-picker" name="tipos_color[' . $i . '][border_color]" value="' . esc_attr( $t['border_color'] ) . '" /></td>';
+        echo '<td><select name="tipos_color[' . $i . '][border_width]">';
+        foreach ( array( '0px', '1px', '2px', '4px' ) as $bw ) {
+            echo '<option value="' . esc_attr( $bw ) . '" ' . selected( $t['border_width'], $bw, false ) . '>' . esc_html( $bw ) . '</option>';
+        }
+        echo '</select></td>';
+        echo '<td><select name="tipos_color[' . $i . '][border_radius]">';
+        foreach ( array( '0px', '4px', '6px', '8px' ) as $br ) {
+            echo '<option value="' . esc_attr( $br ) . '" ' . selected( $t['border_radius'], $br, false ) . '>' . esc_html( $br ) . '</option>';
+        }
+        echo '</select></td>';
+        echo '<td><div class="cdb-aviso cdb-aviso-preview" style="' . $style . '"><strong class="cdb-mensaje-destacado">' . esc_html__( 'Vista previa', 'cdb-empleo' ) . '</strong><span class="cdb-mensaje-secundario"></span></div></td>';
         echo '<td><button type="button" class="button cdb-remove-row">&times;</button></td>';
         echo '</tr>';
         $i++;

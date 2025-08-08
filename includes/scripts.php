@@ -27,7 +27,14 @@ function cdb_empleo_enqueue_scripts() {
     $tipos = cdb_empleo_get_tipos_color();
     $css   = '';
     foreach ( $tipos as $slug => $t ) {
-        $css .= '.' . $t['class'] . '{background-color:' . $t['color'] . ';color:' . $t['text'] . ';}';
+        $selector = '.cdb-aviso.' . $t['class'] . ', .cdb-aviso-' . $slug;
+        $css     .= $selector . '{background-color:' . $t['bg'] . ';color:' . $t['text'] . ';';
+        if ( '0px' === $t['border_width'] ) {
+            $css .= 'border:none;border-left:4px solid ' . $t['border_color'] . ';';
+        } else {
+            $css .= 'border:' . $t['border_width'] . ' solid ' . $t['border_color'] . ';';
+        }
+        $css .= 'border-radius:' . $t['border_radius'] . ';}';
     }
     if ( $css ) {
         wp_add_inline_style( 'cdb-empleo-mensajes', $css );
